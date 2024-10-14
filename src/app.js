@@ -1,18 +1,28 @@
 // src/app.js
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import errorMiddleware from './middlewares/errors.js';
+import authRoutes from './routes/routes.js';
 
-// Importar rutas
-const authRoutes = require('./routes/routes');
+dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(cors()); // Permitir CORS para todas las solicitudes
-app.use(express.json()); // Habilitar el parsing de JSON
+app.use(cors());
+app.use(express.json());
 
 // Usar las rutas de autenticación
 app.use('/auth', authRoutes);
 
-module.exports = app;
+app.get('/', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Servidor lambda corriendo'
+    });
+});
+
+app.use(errorMiddleware);
+
+export default app; 
